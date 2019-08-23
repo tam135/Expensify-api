@@ -8,6 +8,7 @@ const winston = require('winston')
 const ExpenseService = require('./expenses/expense-service')
 
 const app = express()
+const jsonParser = express.json()
 
 const morganOption = (NODE_ENV === 'production')
     ? 'tiny'
@@ -52,6 +53,29 @@ app.get('/api/expenses/:expense_id', (req, res, next) => {
                 })
             })
             .catch(next)
+})
+
+app.post('/api/expenses', jsonParser, (req, res, next) => {
+    const { amount, description, style } = req.body
+    const newExpense = { amount, description, style }
+    ExpenseService.insertExpense(
+        req.app.get('db'),
+        newExpense
+    )
+        .then(expense => {
+            res 
+                .status(201)
+                .location(`/api/expenses/${expense.id}`)
+                .json({
+                    id: expense.id,
+                    amount: expense.amount,
+                    style: expense.style,
+                    description: expense.description,
+                    date: new Date(expense.date).toLocaleString()
+                })
+        })
+        .catch(next)
+
 })
 
 

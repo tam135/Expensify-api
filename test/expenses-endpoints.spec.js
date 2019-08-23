@@ -73,4 +73,33 @@ describe('Expenses Endpoints', function() {
             })
         })
     })
+
+    describe.only(`POST /api/expenses`, () => {
+        it(`creates an expense, responding with 201 and the new expense`, () => {
+            this.retries(3)
+            const newExpense = {
+                amount: '99.99',
+                style: 'Food',
+                description: 'Groceries for the week'
+            }
+            return supertest(app)
+                .post('/api/expenses')
+                .send(newExpense)
+                .expect(201)
+                .expect(res => {
+                    expect(res.body.amount).to.eql(newExpense.amount)
+                    expect(res.body.style).to.eql(newExpense.style)
+                    expect(res.body.description).to.eql(newExpense.description)
+                    expect(res.headers.location).to.eql(`/api/expenses/${res.body.id}`)
+                    const expected = new Date().toLocaleString('en', { timeZone: 'UTC' })
+                    const actual = new Date(res.body.date).toLocaleString()
+                    expect(actual).to.eql(expected)
+                })
+                .then(postRes =>
+                    supertest(app)
+                        .get(`/api/expenses/${postRes.body.id}`)
+                        .expect(postRes.body)
+                    )
+        })
+    })
 })
