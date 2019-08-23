@@ -38,6 +38,11 @@ app.get('/api/expenses/:expense_id', (req, res, next) => {
         req.params.expense_id
         )
             .then(expense => {
+                if(!expense) {
+                    return res.status(404).json({
+                        error: { message: `Expense doesn't exist`}
+                    })
+                }
                 res.json({
                     id: expense.id,
                     amount: expense.amount,
