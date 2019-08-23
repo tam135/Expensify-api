@@ -74,7 +74,7 @@ describe('Expenses Endpoints', function() {
         })
     })
 
-    describe.only(`POST /api/expenses`, () => {
+    describe(`POST /api/expenses`, () => {
         it(`creates an expense, responding with 201 and the new expense`, () => {
             this.retries(3)
             const newExpense = {
