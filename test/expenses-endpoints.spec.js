@@ -72,6 +72,30 @@ describe('Expenses Endpoints', function() {
                     .expect(200, expectedExpense)
             })
         })
+
+        context(`Given an XSS attack article`, () => {
+            const maliciousExpense = {
+                id: 911,
+                amount: '1.11',
+                style: 'Food',
+                description: `Bad image<img src="https://url.to.file.which/does-not.exist">.But not<strong>all</strong> bad.`
+            }
+
+            beforeEach('insert malicious expense', () => {
+                return db 
+                    .into('expense_logs')
+                    .insert([ maliciousExpense ])
+            })
+
+            it('removes XSS attack content', () => {
+                return supertest(app)
+                    .get(`/api/expenses/${maliciousExpense.id}`)
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.body.description).to.eql(`Bad image<img src="https://url.to.file.which/does-not.exist">.But not<strong>all</strong> bad.`)
+                    })
+            })
+        })
     })
 
     describe(`POST /api/expenses`, () => {
@@ -100,6 +124,59 @@ describe('Expenses Endpoints', function() {
                         .get(`/api/expenses/${postRes.body.id}`)
                         .expect(postRes.body)
                     )
+        })
+        const requiredFields = ['amount', 'style', 'description']
+
+        requiredFields.forEach(field => {
+            const newExpense = {
+                amount: '49.99',
+                style: 'Bills',
+                description: 'Test new expense description'
+            }
+
+            it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+                delete newExpense[field]
+
+                return supertest(app)
+                    .post('/api/expenses')
+                    .send(newExpense)
+                    .expect(400, {
+                        error: { message: `Missing '${field}' in request body` }
+                    })
+            })
+        })
+    })
+
+    describe(`DELETE /api/expenses/:expense_id`, () => {
+        context(`Given no expenses`, () => {
+            it(`responds with 404`, () => {
+                const expenseId = 123456
+                return supertest(app)
+                    .delete(`/api/expenses/${expenseId}`)
+                    .expect(404, { error: { message: `Expense doesn't exist` } })
+            })
+        })
+        context(`Given there are expenses in the database`, () => {
+            const testExpenses = makeExpensesArray()
+
+            beforeEach('insert expenses', () => {
+                return db 
+                    .into('expense_logs')
+                    .insert(testExpenses)
+            })
+
+            it('responds with 204 and removes the expense', () => {
+                const idToRemove = 2 
+                const expectedExpense = testExpenses.filter(expense => expense.id !== idToRemove)
+                return supertest(app)
+                    .delete(`/api/expenses/${idToRemove}`)
+                    .expect(204)
+                    .then(res => 
+                        supertest(app)
+                            .get(`/api/expenses`)
+                            .expect(expectedExpense)
+                        )
+            })
         })
     })
 })

@@ -20,8 +20,6 @@ app.use(cors())
 
 app.use('/api/expenses', expenseRouter)
 
-
-
 app.get('/', (req,res) =>{
     res.send('Hello, World!')
 })

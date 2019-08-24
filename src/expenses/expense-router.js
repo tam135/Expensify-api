@@ -1,8 +1,17 @@
+const xss = require('xss')
 const express = require('express')
 const ExpenseService = require('./expense-service')
 
 const expenseRouter = express.Router()
 const jsonParser = express.json()
+
+const serializeExpense = expense => ({
+    id: expense.id,
+    style: expense.style,
+    amount: expense.amount,
+    description: xss(expense.description),
+    date: new Date().toLocaleString('en', { timeZone: 'UTC' })
+})
 
 expenseRouter
     .route('/')
@@ -14,7 +23,7 @@ expenseRouter
                     id: expense.id,
                     amount: expense.amount,
                     style: expense.style,
-                    description: expense.description,
+                    description: xss(expense.description),
                     date: new Date(expense.date).toLocaleString()
                 })))
             })
@@ -23,6 +32,14 @@ expenseRouter
     .post(jsonParser, (req, res, next) => {
         const { amount, description, style } = req.body
         const newExpense = { amount, description, style }
+
+        for (const [key, value] of Object.entries(newExpense))
+            if (value == null) {
+                return res.status(400).json({
+                    error: { message: `Missing '${key}' in request body` }
+                })
+            }
+
         ExpenseService.insertExpense(
             req.app.get('db'),
             newExpense
@@ -45,8 +62,25 @@ expenseRouter
 
 expenseRouter 
     .route('/:expense_id')
-    .get((req, res, next) => {
+    .all((req, res, next) => {
         ExpenseService.getById(
+            req.app.get('db'),
+            req.params.expense_id
+        )
+            .then(expense => {
+                if (!expense) {
+                    return res.status(404).json({
+                        error: { message: `Expense doesn't exist` }
+                    })
+                }
+                res.expense = expense // save the expense for the middleware
+                next() 
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.json(serializeExpense(res.expense))
+        /*ExpenseService.getById(
             req.app.get('db'),
             req.params.expense_id
         )
@@ -63,6 +97,16 @@ expenseRouter
                     description: expense.description,
                     date: new Date(expense.date).toLocaleString()
                 })
+            })
+            .catch(next)*/
+    })
+    .delete((req, res, next) => {
+        ExpenseService.deleteExpense(
+            req.app.get('db'),
+            req.params.expense_id
+        )
+            .then(() => {
+                res.status(204).end()
             })
             .catch(next)
     })
