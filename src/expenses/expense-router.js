@@ -1,4 +1,5 @@
 const xss = require('xss')
+const path = require('path')
 const express = require('express')
 const ExpenseService = require('./expense-service')
 
@@ -47,7 +48,7 @@ expenseRouter
             .then(expense => {
                 res
                     .status(201)
-                    .location(`/api/expenses/${expense.id}`)
+                    .location(path.posix.join(req.originalUrl + `/${expense.id}`))
                     .json({
                         id: expense.id,
                         amount: expense.amount,
@@ -80,25 +81,6 @@ expenseRouter
     })
     .get((req, res, next) => {
         res.json(serializeExpense(res.expense))
-        /*ExpenseService.getById(
-            req.app.get('db'),
-            req.params.expense_id
-        )
-            .then(expense => {
-                if (!expense) {
-                    return res.status(404).json({
-                        error: { message: `Expense doesn't exist` }
-                    })
-                }
-                res.json({
-                    id: expense.id,
-                    amount: expense.amount,
-                    style: expense.style,
-                    description: expense.description,
-                    date: new Date(expense.date).toLocaleString()
-                })
-            })
-            .catch(next)*/
     })
     .delete((req, res, next) => {
         ExpenseService.deleteExpense(
@@ -106,6 +88,28 @@ expenseRouter
             req.params.expense_id
         )
             .then(() => {
+                res.status(204).end()
+            })
+            .catch(next)
+    })
+    .patch(jsonParser, (req, res, next) => {
+        const { amount, style, description } = req.body 
+        const expenseToUpdate = { amount, style, description }
+        
+        const numberOfValues = Object.values(expenseToUpdate).filter(Boolean).length
+        if (numberOfValues === 0) {
+            return res.status(400).json({
+                error: {
+                    message: `Request body must contain either 'amount', 'style', or 'description'`
+                }
+            })
+        }
+        ExpenseService.updateExpense(
+            req.app.get('db'),
+            req.params.expense_id,
+            expenseToUpdate
+        )
+            .then(numRowsAffected => {
                 res.status(204).end()
             })
             .catch(next)

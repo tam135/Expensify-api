@@ -47,6 +47,7 @@ describe('Expenses Endpoints', function() {
     })
 
     describe(`GET /api/expenses/:expense_id`, () => {
+        this.retries(3)
         context(`Given no expenses`, () => {
             it(`responds with 404`, () => {
                 const expenseId = 123456 
@@ -56,8 +57,8 @@ describe('Expenses Endpoints', function() {
             })
         })
         context('Given there are expenses in the database', () => {
+            this.retries(3)
             const testExpenses = makeExpensesArray()
-
             beforeEach('insert expenses', () => {
                 return db
                     .into('expense_logs')
@@ -65,6 +66,7 @@ describe('Expenses Endpoints', function() {
             })
 
             it('GET /api/expenses/:expense_id responds with 200 and the specified expense', () => {
+                this.retries(3)
                 const expenseId = 2
                 const expectedExpense = testExpenses[expenseId - 1]
                 return supertest(app)
@@ -174,6 +176,86 @@ describe('Expenses Endpoints', function() {
                     .then(res => 
                         supertest(app)
                             .get(`/api/expenses`)
+                            .expect(expectedExpense)
+                        )
+            })
+        })
+    })
+
+    describe.only(`PATCH /api/expenses/:expense_id`, () => {
+        context(`Given no expenses`, () => {
+            it(`responds with 404`, () => {
+                const expenseId = 123456
+                return supertest(app)
+                    .patch(`/api/expenses/${expenseId}`)
+                    .expect(404, {error: { message: `Expense doesn't exist` } })
+            })
+        })
+
+        context('Given there are expenses in the database', () => {
+            this.retries(3)
+            const testExpenses = makeExpensesArray()
+
+            beforeEach('insert expenses', () => {
+                return db 
+                    .into('expense_logs')
+                    .insert(testExpenses)
+            })
+
+            it('responds with 204 and updates the expense', () => {
+                const idToUpdate = 2 
+                const updateExpense = {
+                    amount: '99.99',
+                    style: 'Transportation',
+                    description: 'oil change and gas',
+                }
+                const expectedExpense = {
+                    ...testExpenses[idToUpdate - 1],
+                    ...updateExpense
+                }
+                return supertest(app)
+                    .patch(`/api/expenses/${idToUpdate}`)
+                    .send(updateExpense)
+                    .expect(204)
+                    .then(res =>
+                        supertest(app)
+                            .get(`/api/expenses/${idToUpdate}`)
+                            .expect(expectedExpense)
+                            )
+            })
+
+            it(`responds with 400 when no required fields supplied`, () => {
+                const idToUpdate = 2 
+                return supertest(app)
+                    .patch(`/api/expenses/${idToUpdate}`)
+                    .send({ irrelevantField: 'foo' })
+                    .expect(400, {
+                        error: {
+                            message: `Request body must contain either 'amount', 'style', or 'description'`
+                        }
+                    })
+            })
+
+            it(`responds with 204 when updating only a subset of fields`, () => {
+                const idToUpdate = 2 
+                const updateExpense = {
+                    amount: '55.55',
+                }
+                const expectedExpense ={
+                    ...testExpenses[idToUpdate - 1],
+                    ...updateExpense
+                }
+
+                return supertest(app)
+                    .patch(`/api/expenses/${idToUpdate}`)
+                    .send({
+                        ...updateExpense,
+                        fieldToIgnore: 'should not be in GET response'
+                    })
+                    .expect(204)
+                    .then(res => 
+                        supertest(app)
+                            .get(`/api/expenses/${idToUpdate}`)
                             .expect(expectedExpense)
                         )
             })
