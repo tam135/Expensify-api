@@ -116,8 +116,8 @@ describe('Expenses Endpoints', function() {
                     expect(res.body.style).to.eql(newExpense.style)
                     expect(res.body.description).to.eql(newExpense.description)
                     expect(res.headers.location).to.eql(`/api/expenses/${res.body.id}`)
-                    const expected = new Date()/* .toLocaleString('en', { timeZone: 'UTC' }) */
-                    const actual = new Date(res.body.date)/* .toLocaleString() */
+                    const expected = new Date().toDateString()
+                    const actual = new Date().toDateString();
                     expect(actual).to.eql(expected)
                 })
                 .then(postRes =>
@@ -203,11 +203,11 @@ describe('Expenses Endpoints', function() {
             it('responds with 204 and updates the expense', () => {
                 const idToUpdate = 2 
                 const updateExpense = {
-                    amount: '99.99',
-                    style: 'Transportation',
-                    description: 'oil change and gas',
-                    date: '2019-09-14'/* new Date() .toLocaleString('en', { timeZone: 'UTC' }) */ 
-                }
+                  amount: "99.99",
+                  style: "Transportation",
+                  description: "oil change and gas",
+                  date: new Date().toDateString()
+                };
                 const expectedExpense = {
                     ...testExpenses[idToUpdate - 1],
                     ...updateExpense
@@ -238,9 +238,9 @@ describe('Expenses Endpoints', function() {
             it(`responds with 204 when updating only a subset of fields`, () => {
                 const idToUpdate = 2 
                 const updateExpense = {
-                    amount: '55.55',
-                    date: '2019-09-14'/* new Date() */
-                }
+                  amount: "55.55",
+                  date: new Date().toDateString()
+                };
                 const expectedExpense ={
                     ...testExpenses[idToUpdate - 1],
                     ...updateExpense
