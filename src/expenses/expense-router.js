@@ -54,7 +54,7 @@ expenseRouter
                         amount: expense.amount,
                         style: expense.style,
                         description: expense.description,
-                        date: expense/* new Date(expense.date).toLocaleString() */
+                        date:  new Date(expense.date).toLocaleString() 
                     })
             })
             .catch(next)
