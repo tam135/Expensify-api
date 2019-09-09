@@ -47,7 +47,6 @@ describe('Expenses Endpoints', function() {
     })
 
     describe(`GET /api/expenses/:expense_id`, () => {
-        this.retries(3)
         context(`Given no expenses`, () => {
             it(`responds with 404`, () => {
                 const expenseId = 123456 
@@ -66,12 +65,12 @@ describe('Expenses Endpoints', function() {
             })
 
             it('GET /api/expenses/:expense_id responds with 200 and the specified expense', () => {
-                this.retries(3)
                 const expenseId = 2
                 const expectedExpense = testExpenses[expenseId - 1]
                 return supertest(app)
                     .get(`/api/expenses/${expenseId}`)
                     .expect(200, expectedExpense)
+                        
             })
         })
 
@@ -102,7 +101,6 @@ describe('Expenses Endpoints', function() {
 
     describe(`POST /api/expenses`, () => {
         it(`creates an expense, responding with 201 and the new expense`, () => {
-            this.retries(3)
             const newExpense = {
                 amount: '99.99',
                 style: 'Food',
@@ -182,7 +180,7 @@ describe('Expenses Endpoints', function() {
         })
     })
 
-    describe.only(`PATCH /api/expenses/:expense_id`, () => {
+    describe(`PATCH /api/expenses/:expense_id`, () => {
         context(`Given no expenses`, () => {
             it(`responds with 404`, () => {
                 const expenseId = 123456
@@ -193,7 +191,6 @@ describe('Expenses Endpoints', function() {
         })
 
         context('Given there are expenses in the database', () => {
-            this.retries(3)
             const testExpenses = makeExpensesArray()
 
             beforeEach('insert expenses', () => {
@@ -208,6 +205,7 @@ describe('Expenses Endpoints', function() {
                     amount: '99.99',
                     style: 'Transportation',
                     description: 'oil change and gas',
+                    date: new Date().toLocaleString('en', { timeZone: 'UTC' })
                 }
                 const expectedExpense = {
                     ...testExpenses[idToUpdate - 1],
@@ -240,6 +238,7 @@ describe('Expenses Endpoints', function() {
                 const idToUpdate = 2 
                 const updateExpense = {
                     amount: '55.55',
+                    date: new Date().toLocaleString('en', { timeZone: 'UTC' })
                 }
                 const expectedExpense ={
                     ...testExpenses[idToUpdate - 1],
