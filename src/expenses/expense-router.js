@@ -7,12 +7,12 @@ const expenseRouter = express.Router()
 const jsonParser = express.json()
 
 const serializeExpense = expense => ({
-    id: expense.id,
-    style: expense.style,
-    amount: expense.amount,
-    description: xss(expense.description),
-    date: expense.date/* new Date().toLocaleString('en', { timeZone: 'UTC' })  */
-})
+  id: expense.id,
+  style: expense.style,
+  amount: expense.amount,
+  description: xss(expense.description),
+  date: new Date(expense.date).toLocaleString()
+});
 
 expenseRouter
     .route('/')
@@ -20,13 +20,15 @@ expenseRouter
         const knexInstance = req.app.get('db')
         ExpenseService.getAllExpenses(knexInstance)
             .then(expenses => {
-                res.json(expenses.map(expense => ({
+                res.json(
+                  expenses.map(expense => ({
                     id: expense.id,
                     amount: expense.amount,
                     style: expense.style,
                     description: xss(expense.description),
-                    date: expense.date/* new Date(expense.date).toLocaleString()  */
-                })))
+                    date: new Date(expense.date).toLocaleString()
+                  }))
+                );
             })
             .catch(next)
     })
@@ -47,15 +49,15 @@ expenseRouter
         )
             .then(expense => {
                 res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl + `/${expense.id}`))
-                    .json({
-                        id: expense.id,
-                        amount: expense.amount,
-                        style: expense.style,
-                        description: expense.description,
-                        date: expense.date/* new Date(expense.date).toLocaleString() */
-                    })
+                  .status(201)
+                  .location(path.posix.join(req.originalUrl + `/${expense.id}`))
+                  .json({
+                    id: expense.id,
+                    amount: expense.amount,
+                    style: expense.style,
+                    description: expense.description,
+                    date: new Date(expense.date).toLocaleString()
+                  });
             })
             .catch(next)
 
