@@ -25,7 +25,7 @@ expenseRouter
                     amount: expense.amount,
                     style: expense.style,
                     description: xss(expense.description),
-                    date: expense.date/* new Date(expense.date) .toLocaleString()  */
+                    date: expense.date/* new Date(expense.date).toLocaleString()  */
                 })))
             })
             .catch(next)
@@ -54,7 +54,7 @@ expenseRouter
                         amount: expense.amount,
                         style: expense.style,
                         description: expense.description,
-                        date: expense.date/* new Date(expense.date) .toLocaleString()  */
+                        date: expense.date/* new Date(expense.date).toLocaleString() */
                     })
             })
             .catch(next)
