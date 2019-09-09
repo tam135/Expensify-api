@@ -11,7 +11,7 @@ const serializeExpense = expense => ({
     style: expense.style,
     amount: expense.amount,
     description: xss(expense.description),
-    date: new Date().toLocaleString('en', { timeZone: 'UTC' })
+    date: expense.date/* new Date().toLocaleString() */
 })
 
 expenseRouter
@@ -25,14 +25,14 @@ expenseRouter
                     amount: expense.amount,
                     style: expense.style,
                     description: xss(expense.description),
-                    date: new Date(expense.date).toLocaleString()
+                    date: expense.date/* new Date(expense.date).toLocaleString() */
                 })))
             })
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const { amount, description, style } = req.body
-        const newExpense = { amount, description, style }
+        const { date, amount, description, style } = req.body
+        const newExpense = { date, amount, description, style }
 
         for (const [key, value] of Object.entries(newExpense))
             if (value == null) {
@@ -54,7 +54,7 @@ expenseRouter
                         amount: expense.amount,
                         style: expense.style,
                         description: expense.description,
-                        date: new Date(expense.date).toLocaleString()
+                        date: expense.date/* new Date(expense.date).toLocaleString() */
                     })
             })
             .catch(next)
