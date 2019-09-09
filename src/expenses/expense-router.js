@@ -11,7 +11,7 @@ const serializeExpense = expense => ({
     style: expense.style,
     amount: expense.amount,
     description: xss(expense.description),
-    date: new Date().toLocaleString('en', { timeZone: 'UTC' })
+    date: new Date().toLocaleString('en', { timeZone: 'UTC' }) 
 })
 
 expenseRouter
@@ -25,7 +25,7 @@ expenseRouter
                     amount: expense.amount,
                     style: expense.style,
                     description: xss(expense.description),
-                    date: new Date(expense.date).toLocaleString()
+                    date: new Date(expense.date).toLocaleString() 
                 })))
             })
             .catch(next)
@@ -54,7 +54,7 @@ expenseRouter
                         amount: expense.amount,
                         style: expense.style,
                         description: expense.description,
-                        date: new Date(expense.date).toLocaleString()
+                        date: expense/* new Date(expense.date).toLocaleString() */
                     })
             })
             .catch(next)
