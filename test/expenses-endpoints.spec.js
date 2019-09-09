@@ -65,6 +65,7 @@ describe('Expenses Endpoints', function() {
             })
 
             it('GET /api/expenses/:expense_id responds with 200 and the specified expense', () => {
+                this.retries(3);
                 const expenseId = 2
                 const expectedExpense = testExpenses[expenseId - 1]
                 return supertest(app)
@@ -115,8 +116,8 @@ describe('Expenses Endpoints', function() {
                     expect(res.body.style).to.eql(newExpense.style)
                     expect(res.body.description).to.eql(newExpense.description)
                     expect(res.headers.location).to.eql(`/api/expenses/${res.body.id}`)
-                    const expected = new Date().toLocaleString('en', { timeZone: 'UTC' })
-                    const actual = new Date(res.body.date).toLocaleString()
+                    const expected = new Date()/* .toLocaleString('en', { timeZone: 'UTC' }) */
+                    const actual = new Date(res.body.date)/* .toLocaleString() */
                     expect(actual).to.eql(expected)
                 })
                 .then(postRes =>
@@ -205,7 +206,7 @@ describe('Expenses Endpoints', function() {
                     amount: '99.99',
                     style: 'Transportation',
                     description: 'oil change and gas',
-                    date: new Date().toLocaleString('en', { timeZone: 'UTC' })
+                    date: new Date()/* .toLocaleString('en', { timeZone: 'UTC' }) */
                 }
                 const expectedExpense = {
                     ...testExpenses[idToUpdate - 1],
@@ -238,7 +239,7 @@ describe('Expenses Endpoints', function() {
                 const idToUpdate = 2 
                 const updateExpense = {
                     amount: '55.55',
-                    date: new Date().toLocaleString('en', { timeZone: 'UTC' })
+                    date: new Date()/* to */
                 }
                 const expectedExpense ={
                     ...testExpenses[idToUpdate - 1],
