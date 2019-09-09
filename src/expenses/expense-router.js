@@ -11,7 +11,11 @@ const serializeExpense = expense => ({
     style: expense.style,
     amount: expense.amount,
     description: xss(expense.description),
+<<<<<<< HEAD
     date: new Date().toLocaleString('en', { timeZone: 'UTC' }) 
+=======
+    date: expense.date/* new Date().toLocaleString('en', { timeZone: 'UTC' })  */
+>>>>>>> d332a5f3bac9abb9a6a3dd263df909ba853189df
 })
 
 expenseRouter
@@ -25,7 +29,11 @@ expenseRouter
                     amount: expense.amount,
                     style: expense.style,
                     description: xss(expense.description),
+<<<<<<< HEAD
                     date: new Date(expense.date).toLocaleString() 
+=======
+                    date: expense.date/* new Date(expense.date).toLocaleString()  */
+>>>>>>> d332a5f3bac9abb9a6a3dd263df909ba853189df
                 })))
             })
             .catch(next)
@@ -54,7 +62,11 @@ expenseRouter
                         amount: expense.amount,
                         style: expense.style,
                         description: expense.description,
+<<<<<<< HEAD
                         date:  new Date(expense.date).toLocaleString() 
+=======
+                        date: expense.date/* new Date(expense.date).toLocaleString() */
+>>>>>>> d332a5f3bac9abb9a6a3dd263df909ba853189df
                     })
             })
             .catch(next)
