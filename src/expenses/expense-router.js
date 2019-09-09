@@ -93,8 +93,8 @@ expenseRouter
             .catch(next)
     })
     .patch(jsonParser, (req, res, next) => {
-        const { amount, style, description } = req.body 
-        const expenseToUpdate = { amount, style, description }
+        const { date, amount, style, description } = req.body 
+        const expenseToUpdate = { date, amount, style, description }
         
         const numberOfValues = Object.values(expenseToUpdate).filter(Boolean).length
         if (numberOfValues === 0) {
