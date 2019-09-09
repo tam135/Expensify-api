@@ -206,7 +206,7 @@ describe('Expenses Endpoints', function() {
                     amount: '99.99',
                     style: 'Transportation',
                     description: 'oil change and gas',
-                    date: new Date()/* .toLocaleString('en', { timeZone: 'UTC' }) */
+                    date: '2019-09-14'/* new Date() .toLocaleString('en', { timeZone: 'UTC' }) */ 
                 }
                 const expectedExpense = {
                     ...testExpenses[idToUpdate - 1],
@@ -239,7 +239,7 @@ describe('Expenses Endpoints', function() {
                 const idToUpdate = 2 
                 const updateExpense = {
                     amount: '55.55',
-                    date: new Date()/* to */
+                    date: '2019-09-14'/* new Date() */
                 }
                 const expectedExpense ={
                     ...testExpenses[idToUpdate - 1],
