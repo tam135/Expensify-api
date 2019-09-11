@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS expensify_users;

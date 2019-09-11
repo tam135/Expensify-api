@@ -20,7 +20,7 @@ app.use(helmet())
 app.use(cors())
 
 app.use('/api/expenses', expenseRouter)
-//app.use('/api/users', usersRouter)
+app.use('/api/users', usersRouter)
 
 app.get('/', (req,res) =>{
     res.send('Hello, World!')

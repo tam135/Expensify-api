@@ -8,8 +8,8 @@ const jsonParser = express.json()
 
 const serializeUser = user => ({
     id: user.id,
-    fullname: xss(user.fullname),
-    username: xss(user.username),
+    full_name: xss(user.full_name),
+    user_name: xss(user.user_name),
     date_created: new Date(user.date_created).toLocaleString('en', { timeZone: 'UTC' }),
 })
 
@@ -24,8 +24,8 @@ usersRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const { fullname, username, password } = req.body
-        const newUser = { fullname, username }
+        const { full_name, user_name, password } = req.body
+        const newUser = { full_name, user_name , password }
 
         for (const [key, value] of Object.entries(newUser)) {
             if(value == null) {
@@ -35,7 +35,23 @@ usersRouter
             }
         }
 
+        const passwordError = UsersService.validatePassword(password)
+
+        if(passwordError) 
+            return res.status(400).json({ error: passwordError })
         newUser.password = password;
+
+        UsersService.hasUserWithUserName(
+            req.app.get('db'),
+            user_name
+        )
+            .then(hasUserWithUserName => {
+                if (hasUserWithUserName)
+                    return res.status(400).json({ error: `Username already taken` })
+
+                res.send('ok')
+            })
+            .catch(next)
 
         UsersService.insertUser(
             req.app.get('db'),
@@ -82,14 +98,14 @@ usersRouter
             .catch(next)
     })
     .patch(jsonParser, (req, res, next) => {
-        const { fullname, username, password,  } = req.body
-        const userToUpdate = { fullname, username, password }
+        const { full_name, user_name, password,  } = req.body
+        const userToUpdate = { full_name, user_name, password }
 
         const numberOfValues = Object.values(userToUpdate).filter(Boolean).length
         if (numberOfValues === 0)
             return res.status(400).json({
                 error: {
-                    message: `Request body must contain either 'fullname', 'username', or 'password'`
+                    message: `Request body must contain either 'full_name', 'user_name', or 'password'`
                 }
             })
 
