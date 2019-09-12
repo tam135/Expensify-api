@@ -33,8 +33,8 @@ expenseRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-        const { amount, description, style } = req.body
-        const newExpense = { amount, description, style }
+        const { date, amount, description, style } = req.body
+        const newExpense = { date, amount, description, style }
 
         for (const [key, value] of Object.entries(newExpense))
             if (value == null) {
