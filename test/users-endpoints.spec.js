@@ -8,6 +8,7 @@ describe.only("Users Endpoints", function() {
 
   const { testUsers } = helpers.makeExpensesFixtures();
   const testUser = testUsers[0];
+  
   before("make knex instance", () => {
     db = knex({
       client: "pg",
@@ -134,7 +135,7 @@ describe.only("Users Endpoints", function() {
           full_name: "test full_name"
         };
         return supertest(app)
-          .post("/api/users")
+          .post('/api/users')
           .send(newUser)
           .expect(201)
           .expect(res => {

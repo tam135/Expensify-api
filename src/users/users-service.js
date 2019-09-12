@@ -4,38 +4,38 @@ const bcrypt = require('bcryptjs')
 
 const UsersService = {
   getAllUsers(knex) {
-    return knex.select("*").from("expensity_users");
+    return knex.select('*').from('expensity_users');
   },
 
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into("expensity_users")
-      .returning("*")
+      .into('expensity_users')
+      .returning('*')
       .then(([user]) => user);
   },
 
   getById(knex, id) {
     return knex
-      .from("expensity_users")
-      .select("*")
+      .from('expensity_users')
+      .select('*')
       .where("id", id)
       .first();
   },
 
   deleteUser(knex, id) {
-    return knex("expensity_users")
+    return knex('expensity_users')
       .where({ id })
       .delete();
   },
 
   updateUser(knex, id, newUserFields) {
-    return knex("expensity_users")
+    return knex('expensity_users')
       .where({ id })
       .update(newUserFields);
   },
   hasUserWithUserName(db, user_name) {
-    return db("expensity_users")
+    return db('expensity_users')
       .where({ user_name })
       .first()
       .then(user => !!user);
