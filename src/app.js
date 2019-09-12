@@ -7,6 +7,7 @@ const { NODE_ENV } = require('./config')
 const winston = require('winston')
 const expenseRouter = require('./expenses/expense-router')
 const usersRouter = require('./users/users-router')
+const authRouter = require('./auth/auth-router')
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use(cors())
 
 app.use('/api/expenses', expenseRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/auth', authRouter)
 
 app.get('/', (req,res) =>{
     res.send('Hello, World!')

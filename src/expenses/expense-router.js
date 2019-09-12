@@ -2,6 +2,7 @@ const xss = require('xss')
 const path = require('path')
 const express = require('express')
 const ExpenseService = require('./expense-service')
+const { requireAuth } = require('../middleware/basic-auth')
 
 const expenseRouter = express.Router()
 const jsonParser = express.json()
