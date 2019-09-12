@@ -24,22 +24,6 @@ usersRouter
             .catch(next)
     })
     .post(jsonParser, (req, res, next) => {
-       /*  const { full_name, user_name, password } = req.body
-        const newUser = { full_name, user_name , password }
-
-        for (const [key, value] of Object.entries(newUser)) {
-            if(value == null) {
-                return res.status(400).json({
-                    error: { message: `Missing '${key}' in request body` }
-                })
-            }
-        }
-
-        const passwordError = UsersService.validatePassword(password)
-
-        if(passwordError) 
-            return res.status(400).json({ error: passwordError })
-        newUser.password = password; */
          const { password, user_name, full_name, } = req.body;
 
          for (const field of ["full_name", "user_name", "password"])
@@ -47,8 +31,6 @@ usersRouter
              return res.status(400).json({
                error: { message:`Missing '${field}' in request body` }
              });
-
-         // TODO: check user_name doesn't start with spaces
 
          const passwordError = UsersService.validatePassword(password);
 

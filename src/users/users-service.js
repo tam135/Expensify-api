@@ -4,14 +4,14 @@ const bcrypt = require('bcryptjs')
 
 const UsersService = {
   getAllUsers(knex) {
-    return knex.select('*').from('expensity_users');
+    return knex.select("*").from("expensity_users");
   },
 
   insertUser(db, newUser) {
     return db
       .insert(newUser)
       .into("expensity_users")
-      .returning("*")
+      .returning('*')
       .then(([user]) => user);
   },
 
