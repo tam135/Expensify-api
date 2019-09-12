@@ -22,5 +22,4 @@ VALUES
     ('45.99', 'Personal', 'Dyed my hair blue'),
     ('30.35', 'Transportation', 'Ten for gas and twenty for oil change'),
     ('299.99', 'Travel', 'Visiting my sister for funsies');
-
 COMMIT;

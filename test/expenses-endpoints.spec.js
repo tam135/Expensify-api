@@ -3,7 +3,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const { makeExpensesArray } = require('./expenses.fixtures')
 
-describe("Expenses Endpoints", function() {
+describe.only("Expenses Endpoints", function() {
   let db;
 
   before("make knex instance", () => {
@@ -141,7 +141,7 @@ describe("Expenses Endpoints", function() {
           });
       });
     });
-  });
+  })
 
   describe(`DELETE /api/expenses/:expense_id`, () => {
     context(`Given no expenses`, () => {
