@@ -5,7 +5,7 @@ TRUNCATE
     expensity_users
     RESTART IDENTITY CASCADE;
     
-INSERT INTO expensity_users (user_name, full_name, password)
+INSERT INTO expensity_users(user_name, full_name, password)
 VALUES
   ('dunder', 'Dunder Mifflin', '$2a$12$lHK6LVpc15/ZROZcKU00QeiD.RyYq5dVlV/9m4kKYbGibkRc5l4Ne'),
   ('b.deboop', 'Bodeep Deboop', '$2a$12$VQ5HgWm34QQK2rJyLc0lmu59cy2jcZiV6U1.bE8rBBnC9VxDf/YQO'),
@@ -14,7 +14,7 @@ VALUES
   ('lexlor', 'Alex Taylor', '$2a$12$Hq9pfcWWvnzZ8x8HqJotveRHLD13ceS7DDbrs18LpK6rfj4iftNw.'),
   ('wippy', 'Ping Won In', '$2a$12$ntGOlTLG5nEXYgDVqk4bPejBoJP65HfH2JEMc1JBpXaVjXo5RsTUu');
 
-INSERT INTO expense_logs (amount, style, description)
+INSERT INTO expense_logs(amount, style, description)
 VALUES 
     ('19.99', 'Food', 'Lunch after work'),
     ('200.00', 'Bills', 'Electricity bill'),
