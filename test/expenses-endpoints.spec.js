@@ -100,7 +100,8 @@ describe("Expenses Endpoints", function() {
       const newExpense = {
         amount: "99.99",
         style: "Food",
-        description: "Groceries for the week"
+        description: "Groceries for the week",
+        date: new Date().toDateString()
       };
       return supertest(app)
         .post("/api/expenses")
@@ -112,7 +113,7 @@ describe("Expenses Endpoints", function() {
           expect(res.body.description).to.eql(newExpense.description);
           expect(res.headers.location).to.eql(`/api/expenses/${res.body.id}`);
           const expected = new Date().toDateString();
-          const actual = new Date().toDateString();
+          const actual = new Date(res.body.date).toDateString();
           expect(actual).to.eql(expected);
         })
         .then(postRes =>
