@@ -101,7 +101,7 @@ describe("Expenses Endpoints", function() {
         amount: "99.99",
         style: "Food",
         description: "Groceries for the week",
-        date: new Date().toDateString()
+        date: new Date().toISOString().split("T")[0]
       };
       return supertest(app)
         .post("/api/expenses")
@@ -112,8 +112,8 @@ describe("Expenses Endpoints", function() {
           expect(res.body.style).to.eql(newExpense.style);
           expect(res.body.description).to.eql(newExpense.description);
           expect(res.headers.location).to.eql(`/api/expenses/${res.body.id}`);
-          const expected = new Date().toDateString();
-          const actual = new Date(res.body.date).toDateString();
+          const expected = new Date().toISOString().split("T")[0];
+          const actual = new Date(res.body.date).toISOString().split("T")[0];
           expect(actual).to.eql(expected);
         })
         .then(postRes =>
@@ -200,7 +200,7 @@ describe("Expenses Endpoints", function() {
           amount: "99.99",
           style: "Transportation",
           description: "oil change and gas",
-          date: new Date().toDateString()
+          date: new Date().toISOString().split("T")[0]
         };
         const expectedExpense = {
           ...testExpenses[idToUpdate - 1],
@@ -233,7 +233,7 @@ describe("Expenses Endpoints", function() {
         const idToUpdate = 2;
         const updateExpense = {
           amount: "55.55",
-          date: new Date().toDateString()
+          date: new Date().toISOString().split("T")[0]
         };
         const expectedExpense = {
           ...testExpenses[idToUpdate - 1],

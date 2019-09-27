@@ -12,7 +12,7 @@ const serializeExpense = expense => ({
   style: expense.style,
   amount: expense.amount,
   description: xss(expense.description),
-  date: new Date(expense.date).toDateString()
+  date: new Date(expense.date).toISOString().split("T")[0]
 });
 
 expenseRouter
@@ -27,7 +27,7 @@ expenseRouter
                     amount: expense.amount,
                     style: expense.style,
                     description: xss(expense.description),
-                    date: new Date(expense.date).toDateString()
+                    date: new Date(expense.date).toISOString().split("T")[0]
                   }))
                 );
             })
@@ -57,7 +57,7 @@ expenseRouter
                     amount: expense.amount,
                     style: expense.style,
                     description: expense.description,
-                    date: new Date(expense.date).toDateString()
+                    date: new Date(expense.date).toISOString().split("T")[0]
                   });
             })
             .catch(next)
